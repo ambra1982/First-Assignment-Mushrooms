@@ -1,0 +1,48 @@
+---
+title: "Fungi"
+author: "Ambra"
+date: "February 4, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r fungi}
+library(plyr)
+
+mushroomsdf<- read.csv("https://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/agaricus-lepiota.data", stringsAsFactors = TRUE)
+
+dim(mushroomsdf)
+
+#Subset
+fungidf<- mushroomsdf[, c(1, 2, 4, 6, 21:23)]
+
+#Add col names
+colnames(fungidf)<- c("EDIBILITY", "CAP_SHAPE", "CAP_COLOR", "ODOR", "SPORE_PRINT", "POPULATION", "HABITAT")
+
+#Get all levels of factors before replacing them  
+sapply(fungidf, levels)
+
+#Rename levels
+fungidf1 <- transform(fungidf,
+          EDIBILITY=revalue(EDIBILITY,c("e"="edible", "p"="poisonous")),
+          CAP_SHAPE=revalue(CAP_SHAPE,    c("b"="bell","c"="conical","x"="convex","f"="flat", "k"="knobbed","s"="sunken")),
+           CAP_COLOR=revalue(CAP_COLOR,c("n"="brown", "b"="buff", "c"="cinnamon", "g"="gray", "r"="green","p"="pink", "u"="purple", "e"="red", "w"="white", "y"="yellow")),
+          ODOR=revalue(ODOR, c( "a"="almond", "l"="anise", "c"="creosote", "y"="fishy", "f"="foul", "m"="musty", "n"="none", "p"="pungent", "s"="spicy")),
+          SPORE_PRINT=revalue(SPORE_PRINT, c("k"="black","n"="brown","b"="buff", "h"= "chocolate","r"= "green", "o"="orange", "u"= "purple", "w"="white", "y"="yellow")),
+          POPULATION=revalue(POPULATION, c("a"="abundant", "c"="clustered", "n"= "numerous", "s"="scattered", "v"="several", "y" ="solitary" )),
+          HABITAT=revalue(HABITAT, c("g"="grasses", "l"="leaves", "m"= "meadows", "p"= "paths", "u"= "urban", "w"= "waste", "d"= "woods" )))
+
+
+head(fungidf1)
+
+```
+
